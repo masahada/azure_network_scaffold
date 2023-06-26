@@ -1,0 +1,32 @@
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars: 
+    #Resource Group
+    rg_name: "ansible-rg"
+    location: "japaneast"
+
+    #VNet
+    vnet_name: "test-vnet"
+    vnet_addpre: "10.1.0.0/16"
+
+    #Subnet
+    subnet_name: "subnet1"
+    subnet_addpre: "10.1.1.0/24"
+
+  tasks:
+  - name: Create resource group
+    azure_rm_resourcegroup:
+      name: "{{ rg_name }}"
+      location: "{{ location }}"
+  - name: Create virtual network
+    azure_rm_virtualnetwork:
+      resource_group: "{{ rg_name }}"
+      name: "{{ vnet_name }}"
+      address_prefixes: "{{ vnet_addpre }}"
+  - name: Create subnet
+    azure_rm_subnet:
+      resource_group: "{{ rg_name }}"
+      name: "{{ subnet_name }}"
+      address_prefix: "{{ subnet_addpre }}"
+      virtual_network: "{{ vnet_name }}"
